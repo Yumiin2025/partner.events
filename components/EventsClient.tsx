@@ -20,17 +20,17 @@ export default function EventsClient() {
         <div className="flex flex-col items-center justify-center py-24 bg-white rounded-2xl card-shadow">
           <CalendarX className="w-10 h-10 mb-4" style={{ color: 'var(--text-3)' }} />
           <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--text)' }}>
-            No events found
+            Keine Events gefunden
           </h3>
           <p className="text-sm mb-6" style={{ color: 'var(--text-2)' }}>
-            Try different filters or add the first event!
+            Versuche andere Filter oder füge das erste Event hinzu!
           </p>
           <Link
             href="/events/create"
             className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
             style={{ background: 'var(--green-700)' }}
           >
-            Add Event
+            Event erstellen
           </Link>
         </div>
       ) : (
@@ -38,7 +38,7 @@ export default function EventsClient() {
           {upcoming.length > 0 && (
             <section>
               <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--text-3)' }}>
-                Upcoming — {upcoming.length}
+                Bevorstehend — {upcoming.length}
               </p>
               {filters.view === 'grid' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -63,7 +63,7 @@ export default function EventsClient() {
           {past.length > 0 && (
             <section>
               <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--text-3)' }}>
-                Past Events — {past.length}
+                Vergangene Events — {past.length}
               </p>
               {filters.view === 'grid' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

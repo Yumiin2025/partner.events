@@ -4,12 +4,28 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { CalendarDays, LayoutGrid, Plus } from 'lucide-react';
 
+function RinganaPartnerLogo() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="30" height="30" rx="4" stroke="var(--green-700)" strokeWidth="1.5" fill="none"/>
+      {/* Stem */}
+      <line x1="16" y1="26" x2="16" y2="14" stroke="var(--green-700)" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Left leaf */}
+      <path d="M16 18 C13 16 10 13 11 9 C14 10 17 13 16 18Z" fill="var(--green-600)" opacity="0.85"/>
+      {/* Right leaf */}
+      <path d="M16 15 C19 13 22 10 21 6 C18 7 15 10 16 15Z" fill="var(--green-500)" opacity="0.85"/>
+      {/* Small blossom top */}
+      <circle cx="16" cy="8" r="2" fill="var(--green-700)"/>
+    </svg>
+  );
+}
+
 export default function Header() {
   const pathname = usePathname();
 
   const nav = [
     { href: '/', label: 'Events', icon: LayoutGrid },
-    { href: '/calendar', label: 'Calendar', icon: CalendarDays },
+    { href: '/calendar', label: 'Kalender', icon: CalendarDays },
   ];
 
   return (
@@ -18,17 +34,13 @@ export default function Header() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="8" fill="var(--green-700)" />
-            <path d="M14 6C14 6 8 10 8 15.5C8 18.5 10.7 21 14 21C17.3 21 20 18.5 20 15.5C20 10 14 6 14 6Z" fill="white" opacity="0.9"/>
-            <path d="M14 11C14 11 11 13.5 11 16C11 17.7 12.3 19 14 19" stroke="var(--green-400)" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
+          <RinganaPartnerLogo />
           <div className="leading-tight">
-            <div className="text-xs font-bold tracking-[0.15em] uppercase" style={{ color: 'var(--green-700)' }}>
+            <div className="text-[11px] font-bold tracking-[0.12em] uppercase" style={{ color: 'var(--green-700)' }}>
               RINGANA
             </div>
-            <div className="text-[10px] tracking-wider" style={{ color: 'var(--text-3)' }}>
-              Events
+            <div className="text-[10px] tracking-wider font-medium" style={{ color: 'var(--text-3)' }}>
+              Partner Events
             </div>
           </div>
         </Link>
@@ -61,7 +73,7 @@ export default function Header() {
           style={{ background: 'var(--green-700)' }}
         >
           <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Add Event</span>
+          <span className="hidden sm:inline">Event erstellen</span>
         </Link>
 
       </div>

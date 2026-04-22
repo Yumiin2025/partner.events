@@ -8,12 +8,14 @@ import { Audience } from '@/lib/types';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-const AUDIENCES: { value: Audience; label: string; desc: string }[] = [
-  { value: 'customers', label: 'Customers',   desc: 'For RINGANA customers' },
-  { value: 'partners',  label: 'Partners',    desc: 'For business partners' },
-  { value: 'team',      label: 'Team',        desc: 'Internal team only' },
-  { value: 'all',       label: 'All Welcome', desc: 'Open to everyone' },
+const ZIELGRUPPEN: { value: Audience; label: string; desc: string }[] = [
+  { value: 'customers', label: 'Kunden',          desc: 'Für RINGANA Kunden' },
+  { value: 'partners',  label: 'Partner',          desc: 'Für Geschäftspartner' },
+  { value: 'team',      label: 'Team',             desc: 'Nur internes Team' },
+  { value: 'all',       label: 'Alle willkommen',  desc: 'Offen für alle' },
 ];
+
+const LAENDER = ['Österreich', 'Deutschland', 'Schweiz', 'Italien', 'Sonstiges'];
 
 interface F {
   title: string; description: string; date: string; endDate: string;
@@ -22,16 +24,17 @@ interface F {
   price: string; organizerName: string; organizerEmail: string; organizerRole: string; tags: string;
 }
 
-const EMPTY: F = {
+const LEER: F = {
   title: '', description: '', date: '', endDate: '', time: '', endTime: '',
-  location: '', city: '', country: 'Austria', isOnline: false, audience: 'partners',
-  ticketUrl: '', isFree: true, price: '', organizerName: '', organizerEmail: '', organizerRole: '', tags: '',
+  location: '', city: '', country: 'Österreich', isOnline: false, audience: 'partners',
+  ticketUrl: '', isFree: true, price: '', organizerName: '', organizerEmail: '',
+  organizerRole: '', tags: '',
 };
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Abschnitt({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl p-6 card-shadow">
-      <h2 className="text-sm font-semibold uppercase tracking-wider mb-5" style={{ color: 'var(--text-3)' }}>{title}</h2>
+      <h2 className="text-xs font-semibold uppercase tracking-wider mb-5" style={{ color: 'var(--text-3)' }}>{title}</h2>
       {children}
     </div>
   );
@@ -41,18 +44,15 @@ function Label({ children }: { children: React.ReactNode }) {
   return <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-2)' }}>{children}</label>;
 }
 
-function Field({ error, children }: { error?: string; children: React.ReactNode }) {
-  return (
-    <div>
-      {children}
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
-    </div>
-  );
+function Fehler({ msg }: { msg?: string }) {
+  return msg ? <p className="text-xs text-red-500 mt-1">{msg}</p> : null;
 }
 
 const inputStyle = {
-  background: 'var(--bg)', border: '1px solid var(--border-md)',
-  color: 'var(--text)', borderRadius: '10px',
+  background: 'var(--bg)',
+  border: '1px solid var(--border-md)',
+  color: 'var(--text)',
+  borderRadius: '10px',
 };
 
 function Toggle({ on, onToggle, label, sub }: { on: boolean; onToggle: () => void; label: string; sub?: string }) {
@@ -75,13 +75,13 @@ function Toggle({ on, onToggle, label, sub }: { on: boolean; onToggle: () => voi
   );
 }
 
-function CreateForm() {
+function EventFormular() {
   const router = useRouter();
   const params = useSearchParams();
   const editId = params.get('edit');
   const { events, addEvent, updateEvent } = useEventStore();
 
-  const [form, setForm] = useState<F>(EMPTY);
+  const [form, setForm] = useState<F>(LEER);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof F, string>>>({});
 
@@ -103,13 +103,13 @@ function CreateForm() {
 
   const validate = () => {
     const e: Partial<Record<keyof F, string>> = {};
-    if (!form.title.trim()) e.title = 'Required';
-    if (!form.date) e.date = 'Required';
-    if (!form.time) e.time = 'Required';
-    if (!form.location.trim()) e.location = 'Required';
-    if (!form.isOnline && !form.city.trim()) e.city = 'Required for in-person events';
-    if (!form.organizerName.trim()) e.organizerName = 'Required';
-    if (!form.organizerEmail.trim()) e.organizerEmail = 'Required';
+    if (!form.title.trim())          e.title = 'Pflichtfeld';
+    if (!form.date)                   e.date = 'Pflichtfeld';
+    if (!form.time)                   e.time = 'Pflichtfeld';
+    if (!form.location.trim())        e.location = 'Pflichtfeld';
+    if (!form.isOnline && !form.city.trim()) e.city = 'Pflichtfeld bei Präsenz-Events';
+    if (!form.organizerName.trim())   e.organizerName = 'Pflichtfeld';
+    if (!form.organizerEmail.trim())  e.organizerEmail = 'Pflichtfeld';
     setErrors(e);
     return !Object.keys(e).length;
   };
@@ -121,7 +121,8 @@ function CreateForm() {
     await new Promise((r) => setTimeout(r, 350));
 
     const data = {
-      title: form.title.trim(), description: form.description.trim(),
+      title: form.title.trim(),
+      description: form.description.trim(),
       date: form.date, endDate: form.endDate || undefined,
       time: form.time, endTime: form.endTime || undefined,
       location: form.location.trim(),
@@ -132,7 +133,8 @@ function CreateForm() {
       isFree: form.isFree,
       price: form.isFree ? undefined : form.price.trim() || undefined,
       organizer: {
-        name: form.organizerName.trim(), email: form.organizerEmail.trim(),
+        name: form.organizerName.trim(),
+        email: form.organizerEmail.trim(),
         role: form.organizerRole.trim() || undefined,
       },
       tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
@@ -144,27 +146,26 @@ function CreateForm() {
     setSaving(false);
   };
 
-  const inp = (extra?: object) => ({
-    className: 'w-full px-3.5 py-2.5 text-sm outline-none rounded-[10px] transition-shadow focus:ring-2 focus:ring-green-200',
-    style: { ...inputStyle, ...extra },
-  });
+  const inp = {
+    className: 'w-full px-3.5 py-2.5 text-sm outline-none rounded-[10px] transition-shadow',
+    style: inputStyle,
+  };
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <Header />
 
-      {/* Top */}
       <div style={{ background: 'linear-gradient(135deg, var(--green-900), var(--green-700))' }}>
         <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
-          <Link href="/" className="flex items-center gap-1.5 text-sm mb-4 transition-opacity hover:opacity-70"
+          <Link href="/" className="flex items-center gap-1.5 text-sm mb-4 hover:opacity-70"
             style={{ color: 'rgba(255,255,255,0.65)' }}>
-            <ArrowLeft className="w-4 h-4" /> Back
+            <ArrowLeft className="w-4 h-4" /> Zurück
           </Link>
           <h1 className="text-2xl font-bold text-white">
-            {editId ? 'Edit Event' : 'Add New Event'}
+            {editId ? 'Event bearbeiten' : 'Neues Event erstellen'}
           </h1>
           <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            Share your event with the RINGANA community
+            Teile dein Event mit der RINGANA Partner Community
           </p>
         </div>
       </div>
@@ -172,86 +173,88 @@ function CreateForm() {
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
         <form onSubmit={submit} className="space-y-5">
 
-          {/* Details */}
-          <Section title="Event Details">
+          {/* Event Details */}
+          <Abschnitt title="Event Details">
             <div className="space-y-4">
-              <Field error={errors.title}>
-                <Label>Title *</Label>
-                <input {...inp()} value={form.title} onChange={(e) => set('title')(e.target.value)}
-                  placeholder="e.g. RINGANA Partner Night Vienna" />
-              </Field>
               <div>
-                <Label>Description</Label>
-                <textarea {...inp()} value={form.description}
-                  onChange={(e) => set('description')(e.target.value)}
-                  placeholder="What is this event about?"
-                  rows={4} style={{ ...inputStyle, resize: 'none', display: 'block', width: '100%',
-                    padding: '10px 14px', fontSize: '14px', outline: 'none', borderRadius: '10px' }} />
+                <Label>Titel *</Label>
+                <input {...inp} value={form.title} onChange={(e) => set('title')(e.target.value)}
+                  placeholder="z.B. RINGANA Partner Abend Wien" />
+                <Fehler msg={errors.title} />
               </div>
               <div>
-                <Label>Tags (comma-separated)</Label>
-                <input {...inp()} value={form.tags} onChange={(e) => set('tags')(e.target.value)}
-                  placeholder="wellness, launch, networking" />
+                <Label>Beschreibung</Label>
+                <textarea value={form.description} onChange={(e) => set('description')(e.target.value)}
+                  placeholder="Was erwartet die Teilnehmer?" rows={4}
+                  className="w-full px-3.5 py-2.5 text-sm outline-none resize-none rounded-[10px]"
+                  style={inputStyle} />
+              </div>
+              <div>
+                <Label>Tags (kommagetrennt)</Label>
+                <input {...inp} value={form.tags} onChange={(e) => set('tags')(e.target.value)}
+                  placeholder="wellness, launch, netzwerken" />
               </div>
             </div>
-          </Section>
+          </Abschnitt>
 
-          {/* Date & Time */}
-          <Section title="Date & Time">
+          {/* Datum & Uhrzeit */}
+          <Abschnitt title="Datum & Uhrzeit">
             <div className="grid grid-cols-2 gap-4">
-              <Field error={errors.date}>
-                <Label>Start Date *</Label>
-                <input {...inp()} type="date" value={form.date} onChange={(e) => set('date')(e.target.value)} />
-              </Field>
               <div>
-                <Label>End Date</Label>
-                <input {...inp()} type="date" value={form.endDate} onChange={(e) => set('endDate')(e.target.value)} />
+                <Label>Startdatum *</Label>
+                <input {...inp} type="date" value={form.date} onChange={(e) => set('date')(e.target.value)} />
+                <Fehler msg={errors.date} />
               </div>
-              <Field error={errors.time}>
-                <Label>Start Time *</Label>
-                <input {...inp()} type="time" value={form.time} onChange={(e) => set('time')(e.target.value)} />
-              </Field>
               <div>
-                <Label>End Time</Label>
-                <input {...inp()} type="time" value={form.endTime} onChange={(e) => set('endTime')(e.target.value)} />
+                <Label>Enddatum</Label>
+                <input {...inp} type="date" value={form.endDate} onChange={(e) => set('endDate')(e.target.value)} />
+              </div>
+              <div>
+                <Label>Startzeit *</Label>
+                <input {...inp} type="time" value={form.time} onChange={(e) => set('time')(e.target.value)} />
+                <Fehler msg={errors.time} />
+              </div>
+              <div>
+                <Label>Endzeit</Label>
+                <input {...inp} type="time" value={form.endTime} onChange={(e) => set('endTime')(e.target.value)} />
               </div>
             </div>
-          </Section>
+          </Abschnitt>
 
-          {/* Location */}
-          <Section title="Location">
+          {/* Ort */}
+          <Abschnitt title="Veranstaltungsort">
             <div className="space-y-3">
               <Toggle on={form.isOnline} onToggle={() => set('isOnline')(!form.isOnline)}
-                label="Online Event" sub="This event takes place virtually" />
-              <Field error={errors.location}>
-                <Label>{form.isOnline ? 'Platform' : 'Venue'} *</Label>
-                <input {...inp()} value={form.location} onChange={(e) => set('location')(e.target.value)}
-                  placeholder={form.isOnline ? 'Zoom, Teams, Google Meet…' : 'Hotel name or address'} />
-              </Field>
+                label="Online Event" sub="Dieses Event findet virtuell statt" />
+              <div>
+                <Label>{form.isOnline ? 'Plattform' : 'Veranstaltungsort'} *</Label>
+                <input {...inp} value={form.location} onChange={(e) => set('location')(e.target.value)}
+                  placeholder={form.isOnline ? 'Zoom, Teams, Google Meet…' : 'Hotelname oder Adresse'} />
+                <Fehler msg={errors.location} />
+              </div>
               {!form.isOnline && (
                 <div className="grid grid-cols-2 gap-4">
-                  <Field error={errors.city}>
-                    <Label>City *</Label>
-                    <input {...inp()} value={form.city} onChange={(e) => set('city')(e.target.value)} placeholder="Vienna" />
-                  </Field>
                   <div>
-                    <Label>Country</Label>
+                    <Label>Stadt *</Label>
+                    <input {...inp} value={form.city} onChange={(e) => set('city')(e.target.value)} placeholder="Wien" />
+                    <Fehler msg={errors.city} />
+                  </div>
+                  <div>
+                    <Label>Land</Label>
                     <select value={form.country} onChange={(e) => set('country')(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm outline-none" style={{ ...inputStyle }}>
-                      {['Austria','Germany','Switzerland','Italy','Other'].map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
+                      className="w-full px-3.5 py-2.5 text-sm outline-none rounded-[10px]" style={inputStyle}>
+                      {LAENDER.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                 </div>
               )}
             </div>
-          </Section>
+          </Abschnitt>
 
-          {/* Audience */}
-          <Section title="Audience">
+          {/* Zielgruppe */}
+          <Abschnitt title="Zielgruppe">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {AUDIENCES.map(({ value, label, desc }) => (
+              {ZIELGRUPPEN.map(({ value, label, desc }) => (
                 <button key={value} type="button" onClick={() => set('audience')(value)}
                   className="p-3.5 rounded-xl text-left transition-all"
                   style={form.audience === value
@@ -263,55 +266,57 @@ function CreateForm() {
                 </button>
               ))}
             </div>
-          </Section>
+          </Abschnitt>
 
           {/* Tickets */}
-          <Section title="Tickets & Registration">
+          <Abschnitt title="Tickets & Anmeldung">
             <div className="space-y-3">
               <div>
-                <Label>Registration / Ticket URL</Label>
-                <input {...inp()} type="url" value={form.ticketUrl}
+                <Label>Anmelde- / Ticket-Link</Label>
+                <input {...inp} type="url" value={form.ticketUrl}
                   onChange={(e) => set('ticketUrl')(e.target.value)} placeholder="https://..." />
               </div>
-              <Toggle on={form.isFree} onToggle={() => set('isFree')(!form.isFree)} label="Free event" />
+              <Toggle on={form.isFree} onToggle={() => set('isFree')(!form.isFree)} label="Kostenloses Event" />
               {!form.isFree && (
                 <div>
-                  <Label>Price</Label>
-                  <input {...inp()} value={form.price} onChange={(e) => set('price')(e.target.value)} placeholder="e.g. €25" />
+                  <Label>Preis</Label>
+                  <input {...inp} value={form.price} onChange={(e) => set('price')(e.target.value)} placeholder="z.B. €25" />
                 </div>
               )}
             </div>
-          </Section>
+          </Abschnitt>
 
-          {/* Organizer */}
-          <Section title="Organizer">
+          {/* Veranstalter */}
+          <Abschnitt title="Veranstalter">
             <div className="space-y-4">
-              <Field error={errors.organizerName}>
-                <Label>Your Name *</Label>
-                <input {...inp()} value={form.organizerName}
-                  onChange={(e) => set('organizerName')(e.target.value)} placeholder="e.g. Maria Gruber" />
-              </Field>
-              <Field error={errors.organizerEmail}>
-                <Label>Email *</Label>
-                <input {...inp()} type="email" value={form.organizerEmail}
-                  onChange={(e) => set('organizerEmail')(e.target.value)} placeholder="you@ringana.com" />
-              </Field>
               <div>
-                <Label>Role / Title</Label>
-                <input {...inp()} value={form.organizerRole}
-                  onChange={(e) => set('organizerRole')(e.target.value)} placeholder="e.g. Regional Partner AT" />
+                <Label>Dein Name *</Label>
+                <input {...inp} value={form.organizerName} onChange={(e) => set('organizerName')(e.target.value)}
+                  placeholder="z.B. Maria Gruber" />
+                <Fehler msg={errors.organizerName} />
+              </div>
+              <div>
+                <Label>E-Mail *</Label>
+                <input {...inp} type="email" value={form.organizerEmail}
+                  onChange={(e) => set('organizerEmail')(e.target.value)} placeholder="du@partner.ringana.com" />
+                <Fehler msg={errors.organizerEmail} />
+              </div>
+              <div>
+                <Label>Rolle / Titel</Label>
+                <input {...inp} value={form.organizerRole} onChange={(e) => set('organizerRole')(e.target.value)}
+                  placeholder="z.B. Regionalpartnerin AT" />
               </div>
             </div>
-          </Section>
+          </Abschnitt>
 
-          {/* Submit */}
+          {/* Absenden */}
           <div className="flex items-center justify-between pt-2">
-            <Link href="/" className="text-sm font-medium" style={{ color: 'var(--text-3)' }}>Cancel</Link>
+            <Link href="/" className="text-sm font-medium" style={{ color: 'var(--text-3)' }}>Abbrechen</Link>
             <button type="submit" disabled={saving}
-              className="flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-sm text-white transition-all disabled:opacity-50 card-shadow"
+              className="flex items-center gap-2 px-7 py-3 rounded-xl font-semibold text-sm text-white disabled:opacity-50 card-shadow"
               style={{ background: 'var(--green-700)' }}>
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {editId ? 'Save Changes' : 'Publish Event'}
+              {editId ? 'Änderungen speichern' : 'Event veröffentlichen'}
             </button>
           </div>
         </form>
@@ -320,10 +325,10 @@ function CreateForm() {
   );
 }
 
-export default function CreateEventPage() {
+export default function EventErstellenPage() {
   return (
     <Suspense fallback={<div style={{ background: 'var(--bg)', minHeight: '100vh' }} />}>
-      <CreateForm />
+      <EventFormular />
     </Suspense>
   );
 }

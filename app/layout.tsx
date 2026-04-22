@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RINGANA Events",
-  description: "The central hub for all RINGANA partner, customer, and team events.",
+  title: "RINGANA Partner Events",
+  description: "Die zentrale Plattform für alle RINGANA Partner-, Kunden- und Team-Events.",
 };
 
 export default function RootLayout({
