@@ -8,31 +8,27 @@ import Link from 'next/link';
 
 export default function EventsClient() {
   const { filters, getFilteredEvents } = useEventStore();
-  const events = getFilteredEvents();
-
-  const upcoming = events.filter((e) => e.status !== 'past');
-  const past = events.filter((e) => e.status === 'past');
+  const all      = getFilteredEvents();
+  const upcoming = all.filter((e) => e.status !== 'past');
+  const past     = all.filter((e) => e.status === 'past');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <FilterBar />
 
-      {events.length === 0 ? (
-        <div
-          className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl"
-          style={{ border: '1px solid #ede9e1' }}
-        >
-          <CalendarX className="w-12 h-12 mb-4" style={{ color: '#c8d8cc' }} />
-          <h3 className="text-lg font-semibold mb-1" style={{ color: '#2c3e2d' }}>
+      {all.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 bg-white rounded-2xl card-shadow">
+          <CalendarX className="w-10 h-10 mb-4" style={{ color: 'var(--text-3)' }} />
+          <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--text)' }}>
             No events found
           </h3>
-          <p className="text-sm mb-6" style={{ color: '#5a6b5b' }}>
-            Try adjusting your filters or be the first to add an event!
+          <p className="text-sm mb-6" style={{ color: 'var(--text-2)' }}>
+            Try different filters or add the first event!
           </p>
           <Link
             href="/events/create"
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
-            style={{ backgroundColor: '#4a7c59' }}
+            className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+            style={{ background: 'var(--green-700)' }}
           >
             Add Event
           </Link>
@@ -41,22 +37,22 @@ export default function EventsClient() {
         <>
           {upcoming.length > 0 && (
             <section>
-              <h2 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#5a6b5b' }}>
-                Upcoming · {upcoming.length}
-              </h2>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--text-3)' }}>
+                Upcoming — {upcoming.length}
+              </p>
               {filters.view === 'grid' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {upcoming.map((event, i) => (
-                    <div key={event.id} className="animate-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
-                      <EventCard event={event} view="grid" />
+                  {upcoming.map((e, i) => (
+                    <div key={e.id} className="fade-up h-full" style={{ animationDelay: `${i * 40}ms` }}>
+                      <EventCard event={e} view="grid" />
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {upcoming.map((event, i) => (
-                    <div key={event.id} className="animate-fade-up" style={{ animationDelay: `${i * 30}ms` }}>
-                      <EventCard event={event} view="list" />
+                  {upcoming.map((e, i) => (
+                    <div key={e.id} className="fade-up" style={{ animationDelay: `${i * 25}ms` }}>
+                      <EventCard event={e} view="list" />
                     </div>
                   ))}
                 </div>
@@ -65,21 +61,17 @@ export default function EventsClient() {
           )}
 
           {past.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#9aada0' }}>
-                Past Events · {past.length}
-              </h2>
+            <section>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--text-3)' }}>
+                Past Events — {past.length}
+              </p>
               {filters.view === 'grid' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {past.map((event) => (
-                    <EventCard key={event.id} event={event} view="grid" />
-                  ))}
+                  {past.map((e) => <EventCard key={e.id} event={e} view="grid" />)}
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {past.map((event) => (
-                    <EventCard key={event.id} event={event} view="list" />
-                  ))}
+                  {past.map((e) => <EventCard key={e.id} event={e} view="list" />)}
                 </div>
               )}
             </section>

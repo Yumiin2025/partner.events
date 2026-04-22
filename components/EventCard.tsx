@@ -2,205 +2,161 @@
 
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { MapPin, Clock, Ticket, Wifi, User } from 'lucide-react';
+import { MapPin, Clock, ArrowUpRight, Wifi } from 'lucide-react';
 import { Event } from '@/lib/types';
 import AudienceBadge from './AudienceBadge';
 
-interface Props {
-  event: Event;
-  view?: 'grid' | 'list';
-}
+const ACCENT = ['#2D6A4F','#1B4332','#40916C','#52B788','#2D6A4F'];
+const accent = (id: string) => ACCENT[id.charCodeAt(0) % ACCENT.length];
 
-const PLACEHOLDER_COLORS = [
-  '#4a7c59', '#2d5438', '#6fa882', '#3d6b4a', '#5a8f6a',
-];
-
-function getPlaceholderColor(id: string) {
-  const index = id.charCodeAt(0) % PLACEHOLDER_COLORS.length;
-  return PLACEHOLDER_COLORS[index];
-}
-
-export default function EventCard({ event, view = 'grid' }: Props) {
-  const dateObj = new Date(event.date);
-  const formattedDate = format(dateObj, 'EEE, MMM d, yyyy');
+export default function EventCard({ event, view = 'grid' }: { event: Event; view?: 'grid'|'list' }) {
+  const d = new Date(event.date);
   const isPast = event.status === 'past';
-  const accentColor = getPlaceholderColor(event.id);
+  const color = accent(event.id);
 
+  /* ── LIST ── */
   if (view === 'list') {
     return (
       <Link href={`/events/${event.id}`} className="block group">
         <div
-          className={`flex gap-4 bg-white rounded-xl p-4 border transition-all hover:shadow-md ${
-            isPast ? 'opacity-60' : ''
-          }`}
-          style={{ borderColor: '#ede9e1' }}
+          className="card-shadow card-shadow-hover flex items-center gap-4 bg-white rounded-2xl px-5 py-4 transition-all"
+          style={{ opacity: isPast ? 0.55 : 1 }}
         >
           {/* Date block */}
           <div
-            className="flex-shrink-0 w-14 h-14 rounded-lg flex flex-col items-center justify-center text-white"
-            style={{ backgroundColor: accentColor }}
+            className="flex-shrink-0 w-12 h-12 rounded-xl flex flex-col items-center justify-center text-white"
+            style={{ background: color }}
           >
-            <span className="text-xs font-medium uppercase">
-              {format(dateObj, 'MMM')}
+            <span className="text-[10px] font-semibold uppercase tracking-wider opacity-80">
+              {format(d, 'MMM')}
             </span>
-            <span className="text-xl font-bold leading-tight">
-              {format(dateObj, 'd')}
-            </span>
+            <span className="text-lg font-bold leading-none">{format(d, 'd')}</span>
           </div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <h3
-                  className="font-semibold text-base truncate group-hover:underline"
-                  style={{ color: '#2c3e2d' }}
-                >
-                  {event.title}
-                </h3>
-                <div className="flex flex-wrap items-center gap-3 mt-1 text-sm" style={{ color: '#5a6b5b' }}>
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5" />
-                    {event.isOnline ? 'Online' : `${event.city}, ${event.country}`}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {event.time}
-                    {event.endTime && ` – ${event.endTime}`}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <User className="w-3.5 h-3.5" />
-                    {event.organizer.name}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-shrink-0">
-                <AudienceBadge audience={event.audience} />
-              </div>
+            <div className="flex items-center gap-2 mb-0.5">
+              <AudienceBadge audience={event.audience} />
+              {event.status === 'ongoing' && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-600 animate-pulse">
+                  LIVE
+                </span>
+              )}
+            </div>
+            <h3 className="font-semibold text-sm truncate group-hover:text-green-700 transition-colors" style={{ color: 'var(--text)' }}>
+              {event.title}
+            </h3>
+            <div className="flex items-center gap-3 mt-1" style={{ color: 'var(--text-3)', fontSize: '12px' }}>
+              <span className="flex items-center gap-1">
+                {event.isOnline ? <Wifi className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
+                {event.isOnline ? 'Online' : `${event.city}, ${event.country}`}
+              </span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {event.time}{event.endTime ? ` – ${event.endTime}` : ''}
+              </span>
+              <span className="hidden sm:inline truncate">{event.organizer.name}</span>
             </div>
           </div>
 
-          {/* Ticket */}
-          {event.ticketUrl && !isPast && (
-            <div className="flex-shrink-0 flex items-center">
-              <span
-                className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg"
-                style={{ backgroundColor: '#e8f0e9', color: '#4a7c59' }}
-              >
-                <Ticket className="w-3.5 h-3.5" />
-                {event.isFree ? 'Free' : event.price}
-              </span>
-            </div>
-          )}
+          {/* Right side */}
+          <div className="flex-shrink-0 flex items-center gap-3">
+            {event.isFree
+              ? <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>Free</span>
+              : event.price
+              ? <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>{event.price}</span>
+              : null
+            }
+            <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--green-600)' }} />
+          </div>
         </div>
       </Link>
     );
   }
 
+  /* ── GRID ── */
   return (
     <Link href={`/events/${event.id}`} className="block group h-full">
       <div
-        className={`bg-white rounded-2xl overflow-hidden border h-full flex flex-col transition-all hover:shadow-lg hover:-translate-y-0.5 ${
-          isPast ? 'opacity-60' : ''
-        }`}
-        style={{ borderColor: '#ede9e1' }}
+        className="card-shadow card-shadow-hover bg-white rounded-2xl overflow-hidden h-full flex flex-col transition-all"
+        style={{ opacity: isPast ? 0.55 : 1 }}
       >
-        {/* Image / color banner */}
-        <div
-          className="h-32 flex items-end p-4 relative"
-          style={{
-            backgroundImage: event.imageUrl
-              ? `url(${event.imageUrl})`
-              : `linear-gradient(135deg, ${accentColor}dd, ${accentColor}99)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          {/* Date pill */}
-          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 text-center shadow-sm">
-            <div className="text-xs font-semibold uppercase" style={{ color: '#4a7c59' }}>
-              {format(dateObj, 'MMM')}
-            </div>
-            <div className="text-lg font-bold leading-tight" style={{ color: '#2c3e2d' }}>
-              {format(dateObj, 'd')}
-            </div>
-          </div>
-
-          {/* Status */}
-          {event.status === 'ongoing' && (
-            <span className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
-              LIVE
-            </span>
-          )}
-          {isPast && (
-            <span className="absolute top-3 right-3 bg-black/50 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-              Past
-            </span>
-          )}
-
-          {/* Online badge */}
-          {event.isOnline && (
-            <span
-              className="absolute bottom-3 right-3 flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full text-white"
-              style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-            >
-              <Wifi className="w-3 h-3" />
-              Online
-            </span>
-          )}
-        </div>
+        {/* Top color strip with date */}
+        <div className="h-2 w-full" style={{ background: color }} />
 
         {/* Body */}
-        <div className="p-4 flex flex-col flex-1">
-          <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="p-5 flex flex-col flex-1">
+
+          {/* Date + badges row */}
+          <div className="flex items-start justify-between gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <div
+                className="text-center rounded-xl px-2.5 py-1.5"
+                style={{ background: color + '14' }}
+              >
+                <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color }}>
+                  {format(d, 'MMM')}
+                </div>
+                <div className="text-lg font-bold leading-none" style={{ color }}>
+                  {format(d, 'd')}
+                </div>
+              </div>
+              {event.status === 'ongoing' && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-600 animate-pulse">
+                  LIVE
+                </span>
+              )}
+              {isPast && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--border)', color: 'var(--text-3)' }}>
+                  Past
+                </span>
+              )}
+            </div>
             <AudienceBadge audience={event.audience} />
-            {event.isFree ? (
-              <span className="text-xs font-semibold" style={{ color: '#4a7c59' }}>FREE</span>
-            ) : event.price ? (
-              <span className="text-xs font-semibold" style={{ color: '#4a7c59' }}>{event.price}</span>
-            ) : null}
           </div>
 
+          {/* Title */}
           <h3
-            className="font-semibold text-base mb-1 group-hover:underline line-clamp-2"
-            style={{ color: '#2c3e2d' }}
+            className="font-semibold text-base mb-2 clamp-2 group-hover:text-green-700 transition-colors leading-snug"
+            style={{ color: 'var(--text)' }}
           >
             {event.title}
           </h3>
 
-          <p className="text-sm line-clamp-2 mb-3" style={{ color: '#5a6b5b' }}>
+          {/* Description */}
+          <p className="text-sm clamp-2 mb-4 leading-relaxed" style={{ color: 'var(--text-2)' }}>
             {event.description}
           </p>
 
-          <div className="mt-auto space-y-1.5">
-            <div className="flex items-center gap-1.5 text-xs" style={{ color: '#5a6b5b' }}>
-              <MapPin className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#4a7c59' }} />
-              <span className="truncate">
-                {event.isOnline ? 'Online Event' : `${event.city}, ${event.country}`}
-              </span>
+          {/* Meta */}
+          <div className="mt-auto space-y-1.5" style={{ color: 'var(--text-3)', fontSize: '12px' }}>
+            <div className="flex items-center gap-1.5">
+              {event.isOnline ? <Wifi className="w-3.5 h-3.5 flex-shrink-0" /> : <MapPin className="w-3.5 h-3.5 flex-shrink-0" />}
+              <span className="truncate">{event.isOnline ? 'Online Event' : `${event.city}, ${event.country}`}</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs" style={{ color: '#5a6b5b' }}>
-              <Clock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#4a7c59' }} />
-              <span>
-                {formattedDate} · {event.time}
-                {event.endTime && ` – ${event.endTime}`}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs" style={{ color: '#5a6b5b' }}>
-              <User className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#4a7c59' }} />
-              <span className="truncate">{event.organizer.name}</span>
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>{format(d, 'EEE d MMM')} · {event.time}{event.endTime ? ` – ${event.endTime}` : ''}</span>
             </div>
           </div>
 
-          {event.ticketUrl && !isPast && (
-            <div className="mt-3 pt-3" style={{ borderTop: '1px solid #ede9e1' }}>
-              <span
-                className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-lg w-full"
-                style={{ backgroundColor: '#e8f0e9', color: '#4a7c59' }}
-              >
-                <Ticket className="w-3.5 h-3.5" />
-                Get Tickets
+          {/* Footer */}
+          {!isPast && (
+            <div
+              className="mt-4 pt-4 flex items-center justify-between"
+              style={{ borderTop: '1px solid var(--border)' }}
+            >
+              <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>
+                {event.isFree ? 'Free entry' : event.price ?? ''}
               </span>
+              {event.ticketUrl && (
+                <span
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all"
+                  style={{ background: 'var(--green-50)', color: 'var(--green-700)' }}
+                >
+                  Tickets <ArrowUpRight className="w-3 h-3" />
+                </span>
+              )}
             </div>
           )}
         </div>

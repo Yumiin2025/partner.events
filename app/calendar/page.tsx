@@ -7,25 +7,23 @@ import { useEventStore } from '@/lib/store';
 
 export default function CalendarPage() {
   const { getFilteredEvents } = useEventStore();
-  const events = getFilteredEvents();
-
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f7f5f0' }}>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <Header />
-
-      <div
-        className="relative overflow-hidden py-8"
-        style={{ background: 'linear-gradient(135deg, #2d5438 0%, #4a7c59 100%)' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-white mb-1">Calendar View</h1>
-          <p className="text-white/70">Browse all events by month</p>
+      <div style={{ background: 'linear-gradient(135deg, var(--green-900), var(--green-700))' }}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: 'var(--green-400)' }}>
+            Calendar
+          </p>
+          <h1 className="text-3xl font-bold text-white">Event Calendar</h1>
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            Browse all events by month
+          </p>
         </div>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 space-y-6">
         <FilterBar />
-        <CalendarView events={events} />
+        <CalendarView events={getFilteredEvents()} />
       </div>
     </div>
   );

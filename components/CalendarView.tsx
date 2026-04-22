@@ -1,131 +1,97 @@
 'use client';
 
 import { useState } from 'react';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths, isToday } from 'date-fns';
+import {
+  format, startOfMonth, endOfMonth, startOfWeek, endOfWeek,
+  addDays, isSameMonth, isSameDay, addMonths, subMonths, isToday,
+} from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Event } from '@/lib/types';
 import Link from 'next/link';
 import AudienceBadge from './AudienceBadge';
 
-interface Props {
-  events: Event[];
-}
-
-const AUDIENCE_COLORS: Record<string, string> = {
-  customers: '#2e7d32',
-  partners: '#1565c0',
-  team: '#e65100',
-  all: '#6a1b9a',
+const DOT: Record<string, string> = {
+  customers: '#10B981', partners: '#3B82F6', team: '#F59E0B', all: '#8B5CF6',
 };
 
-export default function CalendarView({ events }: Props) {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+export default function CalendarView({ events }: { events: Event[] }) {
+  const [month, setMonth] = useState(new Date());
+  const [selected, setSelected] = useState<Date | null>(null);
 
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(monthStart);
-  const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
-  const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
+  const mStart = startOfMonth(month);
+  const mEnd   = endOfMonth(mStart);
+  const wStart = startOfWeek(mStart, { weekStartsOn: 1 });
+  const wEnd   = endOfWeek(mEnd, { weekStartsOn: 1 });
 
-  const weeks: Date[][] = [];
-  let day = startDate;
-  while (day <= endDate) {
-    const week: Date[] = [];
-    for (let i = 0; i < 7; i++) {
-      week.push(day);
-      day = addDays(day, 1);
-    }
-    weeks.push(week);
-  }
+  const days: Date[] = [];
+  let d = wStart;
+  while (d <= wEnd) { days.push(d); d = addDays(d, 1); }
 
-  const getEventsForDay = (date: Date) =>
-    events.filter((e) => isSameDay(new Date(e.date), date));
-
-  const selectedEvents = selectedDay ? getEventsForDay(selectedDay) : [];
+  const forDay = (date: Date) => events.filter((e) => isSameDay(new Date(e.date), date));
+  const dayEvents = selected ? forDay(selected) : [];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      {/* Calendar */}
-      <div className="flex-1 bg-white rounded-2xl overflow-hidden shadow-sm" style={{ border: '1px solid #ede9e1' }}>
+    <div className="flex flex-col lg:flex-row gap-5">
+      {/* Calendar grid */}
+      <div className="flex-1 bg-white rounded-2xl overflow-hidden card-shadow">
         {/* Month nav */}
-        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid #ede9e1' }}>
-          <button
-            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-            className="p-2 rounded-lg transition-colors hover:bg-gray-100"
-          >
-            <ChevronLeft className="w-5 h-5" style={{ color: '#4a7c59' }} />
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+          <button onClick={() => setMonth(subMonths(month, 1))}
+            className="p-2 rounded-xl hover:bg-gray-50 transition-colors">
+            <ChevronLeft className="w-5 h-5" style={{ color: 'var(--green-700)' }} />
           </button>
-          <h2 className="text-lg font-bold" style={{ color: '#2c3e2d' }}>
-            {format(currentMonth, 'MMMM yyyy')}
-          </h2>
-          <button
-            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-            className="p-2 rounded-lg transition-colors hover:bg-gray-100"
-          >
-            <ChevronRight className="w-5 h-5" style={{ color: '#4a7c59' }} />
+          <span className="font-semibold" style={{ color: 'var(--text)' }}>
+            {format(month, 'MMMM yyyy')}
+          </span>
+          <button onClick={() => setMonth(addMonths(month, 1))}
+            className="p-2 rounded-xl hover:bg-gray-50 transition-colors">
+            <ChevronRight className="w-5 h-5" style={{ color: 'var(--green-700)' }} />
           </button>
         </div>
 
         {/* Day names */}
-        <div className="grid grid-cols-7" style={{ borderBottom: '1px solid #ede9e1' }}>
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-            <div
-              key={d}
-              className="text-center text-xs font-semibold py-2"
-              style={{ color: '#5a6b5b' }}
-            >
-              {d}
+        <div className="grid grid-cols-7" style={{ borderBottom: '1px solid var(--border)' }}>
+          {['Mo','Tu','We','Th','Fr','Sa','Su'].map((n) => (
+            <div key={n} className="text-center text-xs font-semibold py-2.5" style={{ color: 'var(--text-3)' }}>
+              {n}
             </div>
           ))}
         </div>
 
-        {/* Day cells */}
+        {/* Days */}
         <div className="grid grid-cols-7">
-          {weeks.flat().map((date, i) => {
-            const dayEvents = getEventsForDay(date);
-            const isCurrentMonth = isSameMonth(date, currentMonth);
-            const isSelected = selectedDay && isSameDay(date, selectedDay);
-            const isTodayDate = isToday(date);
-
+          {days.map((date, i) => {
+            const de = forDay(date);
+            const inMonth = isSameMonth(date, month);
+            const isSel   = selected && isSameDay(date, selected);
+            const today   = isToday(date);
             return (
-              <button
-                key={i}
-                onClick={() => setSelectedDay(isSelected ? null : date)}
-                className="min-h-[80px] p-1.5 text-left transition-all hover:bg-gray-50 relative"
+              <button key={i} onClick={() => setSelected(isSel ? null : date)}
+                className="min-h-[76px] p-2 text-left transition-all hover:bg-gray-50"
                 style={{
-                  border: '1px solid #f0ece4',
-                  backgroundColor: isSelected ? '#e8f0e9' : undefined,
-                }}
-              >
+                  border: '1px solid var(--border)',
+                  background: isSel ? 'var(--green-50)' : undefined,
+                  opacity: !inMonth ? 0.3 : 1,
+                }}>
                 <span
-                  className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-medium mb-1 ${
-                    !isCurrentMonth ? 'opacity-30' : ''
-                  }`}
-                  style={
-                    isTodayDate
-                      ? { backgroundColor: '#4a7c59', color: '#fff' }
-                      : { color: '#2c3e2d' }
-                  }
-                >
+                  className="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold mb-1.5"
+                  style={today
+                    ? { background: 'var(--green-700)', color: '#fff' }
+                    : { color: 'var(--text)' }
+                  }>
                   {format(date, 'd')}
                 </span>
                 <div className="space-y-0.5">
-                  {dayEvents.slice(0, 2).map((event) => (
-                    <div
-                      key={event.id}
-                      className="text-[10px] leading-tight font-medium px-1 py-0.5 rounded truncate"
-                      style={{
-                        backgroundColor: AUDIENCE_COLORS[event.audience] + '22',
-                        color: AUDIENCE_COLORS[event.audience],
-                      }}
-                    >
-                      {event.title}
+                  {de.slice(0, 2).map((ev) => (
+                    <div key={ev.id} className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: DOT[ev.audience] }} />
+                      <span className="text-[10px] truncate leading-tight" style={{ color: 'var(--text-2)' }}>
+                        {ev.title}
+                      </span>
                     </div>
                   ))}
-                  {dayEvents.length > 2 && (
-                    <div className="text-[10px] font-medium" style={{ color: '#5a6b5b' }}>
-                      +{dayEvents.length - 2} more
-                    </div>
+                  {de.length > 2 && (
+                    <span className="text-[10px]" style={{ color: 'var(--text-3)' }}>+{de.length - 2}</span>
                   )}
                 </div>
               </button>
@@ -134,41 +100,35 @@ export default function CalendarView({ events }: Props) {
         </div>
       </div>
 
-      {/* Side panel */}
-      <div className="lg:w-80">
-        {selectedDay ? (
-          <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: '1px solid #ede9e1' }}>
-            <h3 className="font-bold text-base mb-4" style={{ color: '#2c3e2d' }}>
-              {format(selectedDay, 'EEEE, MMMM d')}
-            </h3>
-            {selectedEvents.length === 0 ? (
-              <p className="text-sm" style={{ color: '#5a6b5b' }}>No events on this day.</p>
+      {/* Sidebar */}
+      <div className="lg:w-72 space-y-4">
+        {/* Day panel */}
+        {selected ? (
+          <div className="bg-white rounded-2xl p-5 card-shadow">
+            <p className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>
+              {format(selected, 'EEEE, MMMM d')}
+            </p>
+            {dayEvents.length === 0 ? (
+              <p className="text-sm" style={{ color: 'var(--text-3)' }}>No events this day.</p>
             ) : (
-              <div className="space-y-3">
-                {selectedEvents.map((event) => (
-                  <Link
-                    key={event.id}
-                    href={`/events/${event.id}`}
-                    className="block p-3 rounded-xl transition-all hover:shadow-md"
-                    style={{ border: '1px solid #ede9e1', backgroundColor: '#fafaf8' }}
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h4 className="text-sm font-semibold" style={{ color: '#2c3e2d' }}>
-                        {event.title}
-                      </h4>
-                      <AudienceBadge audience={event.audience} />
+              <div className="space-y-2">
+                {dayEvents.map((ev) => (
+                  <Link key={ev.id} href={`/events/${ev.id}`}
+                    className="block p-3 rounded-xl hover:bg-gray-50 transition-all"
+                    style={{ border: '1px solid var(--border)' }}>
+                    <div className="flex items-start justify-between gap-2 mb-1.5">
+                      <span className="text-sm font-medium leading-snug" style={{ color: 'var(--text)' }}>
+                        {ev.title}
+                      </span>
+                      <AudienceBadge audience={ev.audience} />
                     </div>
-                    <div className="text-xs space-y-1" style={{ color: '#5a6b5b' }}>
-                      <div>{event.time}{event.endTime && ` – ${event.endTime}`}</div>
-                      <div>{event.isOnline ? 'Online' : `${event.city}, ${event.country}`}</div>
-                      <div>{event.organizer.name}</div>
+                    <div className="text-xs space-y-0.5" style={{ color: 'var(--text-3)' }}>
+                      <div>{ev.time}{ev.endTime ? ` – ${ev.endTime}` : ''}</div>
+                      <div>{ev.isOnline ? 'Online' : `${ev.city}, ${ev.country}`}</div>
                     </div>
-                    {event.ticketUrl && (
-                      <div
-                        className="mt-2 text-xs font-semibold"
-                        style={{ color: '#4a7c59' }}
-                      >
-                        → Get Tickets
+                    {ev.ticketUrl && (
+                      <div className="text-xs font-semibold mt-2" style={{ color: 'var(--green-600)' }}>
+                        Get tickets →
                       </div>
                     )}
                   </Link>
@@ -177,35 +137,24 @@ export default function CalendarView({ events }: Props) {
             )}
           </div>
         ) : (
-          <div
-            className="bg-white rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-sm"
-            style={{ border: '1px solid #ede9e1', minHeight: '200px' }}
-          >
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-              style={{ backgroundColor: '#e8f0e9' }}
-            >
-              <span className="text-2xl">📅</span>
-            </div>
-            <p className="text-sm font-medium" style={{ color: '#2c3e2d' }}>
-              Select a day
-            </p>
-            <p className="text-xs mt-1" style={{ color: '#5a6b5b' }}>
-              Click on any date to see events
-            </p>
+          <div className="bg-white rounded-2xl p-6 card-shadow flex flex-col items-center text-center"
+            style={{ minHeight: '160px', justifyContent: 'center' }}>
+            <div className="text-3xl mb-2">📅</div>
+            <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>Select a day</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-3)' }}>Click any date to see events</p>
           </div>
         )}
 
         {/* Legend */}
-        <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm" style={{ border: '1px solid #ede9e1' }}>
-          <p className="text-xs font-semibold mb-3" style={{ color: '#5a6b5b' }}>
-            LEGEND
+        <div className="bg-white rounded-2xl p-4 card-shadow">
+          <p className="text-[11px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--text-3)' }}>
+            Legend
           </p>
           <div className="space-y-2">
-            {Object.entries(AUDIENCE_COLORS).map(([key, color]) => (
-              <div key={key} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                <span className="text-xs capitalize" style={{ color: '#2c3e2d' }}>
+            {Object.entries(DOT).map(([key, color]) => (
+              <div key={key} className="flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: color }} />
+                <span className="text-xs capitalize" style={{ color: 'var(--text-2)' }}>
                   {key === 'all' ? 'All Welcome' : key}
                 </span>
               </div>

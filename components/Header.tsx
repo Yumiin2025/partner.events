@@ -2,77 +2,68 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CalendarDays, LayoutGrid, Plus, Leaf } from 'lucide-react';
+import { CalendarDays, LayoutGrid, Plus } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
 
-  const navLinks = [
+  const nav = [
     { href: '/', label: 'Events', icon: LayoutGrid },
     { href: '/calendar', label: 'Calendar', icon: CalendarDays },
   ];
 
   return (
-    <header
-      style={{ backgroundColor: '#2d5438' }}
-      className="sticky top-0 z-50 shadow-md"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: '#6fa882' }}
-            >
-              <Leaf className="w-4 h-4 text-white" />
+    <header className="glass sticky top-0 z-50" style={{ borderBottom: '1px solid var(--border)' }}>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between gap-4">
+
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="8" fill="var(--green-700)" />
+            <path d="M14 6C14 6 8 10 8 15.5C8 18.5 10.7 21 14 21C17.3 21 20 18.5 20 15.5C20 10 14 6 14 6Z" fill="white" opacity="0.9"/>
+            <path d="M14 11C14 11 11 13.5 11 16C11 17.7 12.3 19 14 19" stroke="var(--green-400)" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <div className="leading-tight">
+            <div className="text-xs font-bold tracking-[0.15em] uppercase" style={{ color: 'var(--green-700)' }}>
+              RINGANA
             </div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-white font-bold text-sm tracking-widest uppercase">
-                RINGANA
-              </span>
-              <span
-                className="text-xs tracking-wider"
-                style={{ color: '#a8c9b4' }}
+            <div className="text-[10px] tracking-wider" style={{ color: 'var(--text-3)' }}>
+              Events
+            </div>
+          </div>
+        </Link>
+
+        {/* Nav */}
+        <nav className="flex items-center gap-0.5">
+          {nav.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all"
+                style={active
+                  ? { background: 'var(--green-50)', color: 'var(--green-700)' }
+                  : { color: 'var(--text-2)' }
+                }
               >
-                Events
-              </span>
-            </div>
-          </Link>
+                <Icon className="w-4 h-4" />
+                <span className="hidden sm:inline">{label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-1">
-            {navLinks.map(({ href, label, icon: Icon }) => {
-              const isActive = pathname === href;
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'text-white bg-white/20'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+        {/* CTA */}
+        <Link
+          href="/events/create"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold text-white transition-all flex-shrink-0"
+          style={{ background: 'var(--green-700)' }}
+        >
+          <Plus className="w-4 h-4" />
+          <span className="hidden sm:inline">Add Event</span>
+        </Link>
 
-          {/* CTA */}
-          <Link
-            href="/events/create"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all shadow"
-            style={{ backgroundColor: '#4a7c59' }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#6fa882')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4a7c59')}
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Add Event</span>
-          </Link>
-        </div>
       </div>
     </header>
   );

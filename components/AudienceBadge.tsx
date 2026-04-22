@@ -1,23 +1,31 @@
 import { Audience } from '@/lib/types';
-import { Users, Briefcase, HeartHandshake, Globe } from 'lucide-react';
 
-const config: Record<Audience, { label: string; bg: string; text: string; icon: React.ElementType }> = {
-  customers: { label: 'Customers', bg: '#e8f5e9', text: '#2e7d32', icon: HeartHandshake },
-  partners: { label: 'Partners', bg: '#e3f2fd', text: '#1565c0', icon: Briefcase },
-  team: { label: 'Team', bg: '#fff3e0', text: '#e65100', icon: Users },
-  all: { label: 'All Welcome', bg: '#f3e5f5', text: '#6a1b9a', icon: Globe },
+const cfg: Record<Audience, { label: string; bg: string; color: string; dot: string }> = {
+  customers: { label: 'Customers',   bg: '#ECFDF5', color: '#065F46', dot: '#10B981' },
+  partners:  { label: 'Partners',    bg: '#EFF6FF', color: '#1E40AF', dot: '#3B82F6' },
+  team:      { label: 'Team',        bg: '#FFF7ED', color: '#92400E', dot: '#F59E0B' },
+  all:       { label: 'All Welcome', bg: '#F5F3FF', color: '#5B21B6', dot: '#8B5CF6' },
 };
 
-export default function AudienceBadge({ audience, size = 'sm' }: { audience: Audience; size?: 'sm' | 'md' }) {
-  const { label, bg, text, icon: Icon } = config[audience];
-  const padding = size === 'md' ? 'px-3 py-1.5 text-sm' : 'px-2 py-0.5 text-xs';
-
+export default function AudienceBadge({
+  audience,
+  size = 'sm',
+}: {
+  audience: Audience;
+  size?: 'sm' | 'md';
+}) {
+  const { label, bg, color, dot } = cfg[audience];
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-medium ${padding}`}
-      style={{ backgroundColor: bg, color: text }}
+      className="inline-flex items-center gap-1.5 font-medium rounded-full"
+      style={{
+        background: bg,
+        color,
+        padding: size === 'md' ? '4px 10px' : '2px 8px',
+        fontSize: size === 'md' ? '13px' : '11px',
+      }}
     >
-      <Icon className={size === 'md' ? 'w-3.5 h-3.5' : 'w-3 h-3'} />
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: dot }} />
       {label}
     </span>
   );
