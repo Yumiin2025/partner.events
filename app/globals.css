@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --ringana-green: #4a7c59;
+  --ringana-green-light: #6fa882;
+  --ringana-green-dark: #2d5438;
+  --ringana-cream: #f7f5f0;
+  --ringana-cream-dark: #ede9e1;
+  --ringana-text: #2c3e2d;
+  --ringana-text-light: #5a6b5b;
+  --background: var(--ringana-cream);
+  --foreground: var(--ringana-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--ringana-cream);
+  color: var(--ringana-text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ringana-cream); }
+::-webkit-scrollbar-thumb { background: var(--ringana-green-light); border-radius: 3px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.3s ease forwards;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
