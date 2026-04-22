@@ -20,7 +20,7 @@
   --text-3:    #9CA3AF;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   background: var(--bg);
