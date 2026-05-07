@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  /* Ringana Forest Greens */
-  --green-900: #0F2218;
-  --green-800: #1B3D2B;
-  --green-700: #2D5C44;
-  --green-600: #3D7A5A;
-  --green-500: #52A87B;
-  --green-400: #74C69D;
-  --green-100: #C8E6D8;
-  --green-50:  #EAF4EF;
+  /* RINGANA Sage/Eucalyptus — brand signature */
+  --green-900: #2A4A44;
+  --green-800: #345C55;
+  --green-700: #4A7B72;
+  --green-600: #5E9186;
+  --green-500: #7AAF9F;  /* RINGANA primary sage */
+  --green-400: #9EC9BE;
+  --green-100: #CBE5E0;
+  --green-50:  #EBF5F3;
 
-  /* Ringana Mint/Sage (from brand imagery) */
-  --sage:      #8ECFC4;
-  --sage-light: #D4EDE9;
+  /* Sage accents */
+  --sage:       #7AAF9F;
+  --sage-light: #D6EDEA;
 
-  /* Warm Cream (Ringana background style) */
-  --bg:        #F0EEE9;
+  /* Warm off-white (RINGANA background) */
+  --bg:        #F7F5F0;
   --surface:   #FFFFFF;
-  --cream:     #F5E2B0;
+  --cream:     #EDE8DC;
 
-  --border:    rgba(0,0,0,0.07);
-  --border-md: rgba(0,0,0,0.11);
+  --border:    rgba(0,0,0,0.06);
+  --border-md: rgba(0,0,0,0.10);
 
-  --text:      #1C1917;
-  --text-2:    #57534E;
-  --text-3:    #A8A29E;
+  --text:      #1A1917;
+  --text-2:    #5C5750;
+  --text-3:    #A09890;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -68,7 +68,7 @@ body {
 }
 
 .glass {
-  background: rgba(240,238,233,0.88);
+  background: rgba(247,245,240,0.90);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
