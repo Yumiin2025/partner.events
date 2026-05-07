@@ -40,7 +40,7 @@ export default function Header() {
               So We
             </div>
             <div className="text-[10px] tracking-[0.12em] uppercase font-medium" style={{ color: 'var(--text-3)' }}>
-              Ringana Partner
+              Partner Events
             </div>
           </div>
         </Link>
