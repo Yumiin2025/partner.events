@@ -14,8 +14,8 @@ import AudienceBadge from './AudienceBadge';
 const DOT: Record<string, string> = {
   customers: '#5BB5A8',
   partners:  '#4A9E94',
-  team:      '#D4891A',
-  all:       '#8ECFC8',
+  team:      '#7870C0',
+  all:       '#E8B84B',
 };
 
 export default function CalendarView({ events }: { events: Event[] }) {

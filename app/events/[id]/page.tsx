@@ -173,9 +173,10 @@ export default function EventDetailPage() {
                   <div style={{ borderTop: '1px solid var(--border)' }} />
                   <div className="flex items-center justify-between">
                     <span className="text-sm" style={{ color: 'var(--text-2)' }}>Preis</span>
-                    <span className="text-sm font-bold" style={{ color: 'var(--green-700)' }}>
-                      {event.isFree ? 'KOSTENLOS' : event.price}
-                    </span>
+                    {event.isFree
+                      ? <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'var(--yellow-light)', color: '#9A6C10' }}>KOSTENLOS</span>
+                      : <span className="text-sm font-bold" style={{ color: 'var(--green-700)' }}>{event.price}</span>
+                    }
                   </div>
                 </>
               )}

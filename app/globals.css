@@ -15,10 +15,20 @@
   --sage:       #5BB5A8;
   --sage-light: #A8D8D2;  /* image 1 background mint */
 
+  /* RINGANA Violet/Lavender — from brand image 2 */
+  --violet:      #7870C0;
+  --violet-mid:  #C0B8E8;
+  --violet-light: #EEEDF8;
+
+  /* RINGANA Peach/Yellow — from brand image 3 */
+  --yellow:      #E8B84B;
+  --yellow-mid:  #F5D9A0;
+  --yellow-light: #FDF3DC;
+
   /* Warm off-white — RINGANA neutral (images 2 & 3) */
   --bg:        #EDECEB;
   --surface:   #FFFFFF;
-  --cream:     #F5D9A0;  /* peach accent from image 3 */
+  --cream:     #F5D9A0;
 
   --border:    rgba(0,0,0,0.07);
   --border-md: rgba(0,0,0,0.12);

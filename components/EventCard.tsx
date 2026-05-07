@@ -58,7 +58,7 @@ export default function EventCard({ event, view = 'grid' }: { event: Event; view
           {/* Rechts */}
           <div className="flex-shrink-0 flex items-center gap-3">
             {event.isFree
-              ? <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>Kostenlos</span>
+              ? <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--yellow-light)', color: 'var(--yellow)' }}>Kostenlos</span>
               : event.price
               ? <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>{event.price}</span>
               : null
@@ -129,9 +129,10 @@ export default function EventCard({ event, view = 'grid' }: { event: Event; view
           {/* Footer */}
           {!isPast && (
             <div className="mt-4 pt-4 flex items-center justify-between" style={{ borderTop: '1px solid var(--border)' }}>
-              <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>
-                {event.isFree ? 'Kostenlos' : (event.price ?? '')}
-              </span>
+              {event.isFree
+                ? <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: 'var(--yellow-light)', color: '#9A6C10' }}>Kostenlos</span>
+                : <span className="text-xs font-semibold" style={{ color: 'var(--green-600)' }}>{event.price ?? ''}</span>
+              }
               {event.ticketUrl && (
                 <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all"
                   style={{ background: 'var(--green-50)', color: 'var(--green-700)' }}>

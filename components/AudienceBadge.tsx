@@ -3,8 +3,8 @@ import { Audience } from '@/lib/types';
 const cfg: Record<Audience, { label: string; bg: string; color: string; dot: string }> = {
   customers: { label: 'Kunden',          bg: '#E5F6F4', color: '#265650', dot: '#5BB5A8' },
   partners:  { label: 'Partner',         bg: '#DFF3F1', color: '#1B3E3A', dot: '#4A9E94' },
-  team:      { label: 'Team',            bg: '#FDF6EC', color: '#7C4A1A', dot: '#D4891A' },
-  all:       { label: 'Alle willkommen', bg: '#E5F6F4', color: '#265650', dot: '#8ECFC8' },
+  team:      { label: 'Team',            bg: '#EEEDF8', color: '#5248A0', dot: '#7870C0' },
+  all:       { label: 'Alle willkommen', bg: '#FDF3DC', color: '#9A6C10', dot: '#E8B84B' },
 };
 
 export default function AudienceBadge({
