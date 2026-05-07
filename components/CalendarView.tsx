@@ -12,10 +12,10 @@ import Link from 'next/link';
 import AudienceBadge from './AudienceBadge';
 
 const DOT: Record<string, string> = {
-  customers: '#7AAF9F',
-  partners:  '#5E9186',
+  customers: '#5BB5A8',
+  partners:  '#4A9E94',
   team:      '#D4891A',
-  all:       '#9EC9BE',
+  all:       '#8ECFC8',
 };
 
 export default function CalendarView({ events }: { events: Event[] }) {

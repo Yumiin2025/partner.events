@@ -13,7 +13,7 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 
-const ACCENT = ['#4A7B72','#2A4A44','#5E9186','#7AAF9F','#345C55'];
+const ACCENT = ['#357069','#1B3E3A','#4A9E94','#5BB5A8','#265650'];
 const accent = (id: string) => ACCENT[id.charCodeAt(0) % ACCENT.length];
 
 function InfoRow({ icon: Icon, label, children }: { icon: React.ElementType; label: string; children: React.ReactNode }) {

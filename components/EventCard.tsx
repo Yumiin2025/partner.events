@@ -7,7 +7,7 @@ import { MapPin, Clock, ArrowUpRight, Wifi } from 'lucide-react';
 import { Event } from '@/lib/types';
 import AudienceBadge from './AudienceBadge';
 
-const ACCENT = ['#4A7B72','#2A4A44','#5E9186','#7AAF9F','#345C55'];
+const ACCENT = ['#357069','#1B3E3A','#4A9E94','#5BB5A8','#265650'];
 const accent = (id: string) => ACCENT[id.charCodeAt(0) % ACCENT.length];
 
 export default function EventCard({ event, view = 'grid' }: { event: Event; view?: 'grid' | 'list' }) {

@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* RINGANA Sage/Eucalyptus — brand signature */
-  --green-900: #2A4A44;
-  --green-800: #345C55;
-  --green-700: #4A7B72;
-  --green-600: #5E9186;
-  --green-500: #7AAF9F;  /* RINGANA primary sage */
-  --green-400: #9EC9BE;
-  --green-100: #CBE5E0;
-  --green-50:  #EBF5F3;
+  /* RINGANA Sage — hue ~173° teal-sage, from brand images */
+  --green-900: #1B3E3A;
+  --green-800: #265650;
+  --green-700: #357069;
+  --green-600: #4A9E94;
+  --green-500: #5BB5A8;  /* RINGANA primary sage */
+  --green-400: #8ECFC8;  /* light sage, image 1 text */
+  --green-100: #BEE8E4;  /* badge backgrounds */
+  --green-50:  #E5F6F4;
 
-  /* Sage accents */
-  --sage:       #7AAF9F;
-  --sage-light: #D6EDEA;
+  /* Sage */
+  --sage:       #5BB5A8;
+  --sage-light: #A8D8D2;  /* image 1 background mint */
 
-  /* Warm off-white (RINGANA background) */
-  --bg:        #F7F5F0;
+  /* Warm off-white — RINGANA neutral (images 2 & 3) */
+  --bg:        #EDECEB;
   --surface:   #FFFFFF;
-  --cream:     #EDE8DC;
+  --cream:     #F5D9A0;  /* peach accent from image 3 */
 
-  --border:    rgba(0,0,0,0.06);
-  --border-md: rgba(0,0,0,0.10);
+  --border:    rgba(0,0,0,0.07);
+  --border-md: rgba(0,0,0,0.12);
 
   --text:      #1A1917;
   --text-2:    #5C5750;
@@ -68,7 +68,7 @@ body {
 }
 
 .glass {
-  background: rgba(247,245,240,0.90);
+  background: rgba(237,236,235,0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }

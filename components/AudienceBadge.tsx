@@ -1,10 +1,10 @@
 import { Audience } from '@/lib/types';
 
 const cfg: Record<Audience, { label: string; bg: string; color: string; dot: string }> = {
-  customers: { label: 'Kunden',          bg: '#EBF5F3', color: '#2A5E56', dot: '#7AAF9F' },
-  partners:  { label: 'Partner',         bg: '#E6F2EF', color: '#345C55', dot: '#5E9186' },
+  customers: { label: 'Kunden',          bg: '#E5F6F4', color: '#265650', dot: '#5BB5A8' },
+  partners:  { label: 'Partner',         bg: '#DFF3F1', color: '#1B3E3A', dot: '#4A9E94' },
   team:      { label: 'Team',            bg: '#FDF6EC', color: '#7C4A1A', dot: '#D4891A' },
-  all:       { label: 'Alle willkommen', bg: '#EBF5F3', color: '#2A4A44', dot: '#9EC9BE' },
+  all:       { label: 'Alle willkommen', bg: '#E5F6F4', color: '#265650', dot: '#8ECFC8' },
 };
 
 export default function AudienceBadge({
