@@ -37,7 +37,7 @@ export default function Header() {
           <RinganaPartnerLogo />
           <div className="leading-none">
             <div className="text-[15px] font-bold tracking-tight" style={{ color: 'var(--green-700)' }}>
-              Partner Events
+              So We Partner Events
             </div>
           </div>
         </Link>
