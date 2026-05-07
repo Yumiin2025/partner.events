@@ -35,9 +35,12 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
           <RinganaPartnerLogo />
-          <div className="leading-none">
+          <div className="leading-tight">
             <div className="text-[15px] font-bold tracking-tight" style={{ color: 'var(--green-700)' }}>
-              So We Partner Events
+              So We
+            </div>
+            <div className="text-[10px] tracking-[0.12em] uppercase font-medium" style={{ color: 'var(--text-3)' }}>
+              Ringana Partner
             </div>
           </div>
         </Link>
